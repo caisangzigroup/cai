@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-$config['base_url'] = 'http://cms.caisangzi.com/';
+$config['base_url'] = 'http://www.cai.co/';
 $config['index_page'] = 'index.php';
 $config['uri_protocol']	= 'PATH_INFO';
 $config['url_suffix'] = '';
