@@ -52,22 +52,9 @@ class Site extends MY_Controller
 	public function add_article_tpl()
 	{
 		$data['title'] = "添加文章";
-		$data['action'] = 'add_article';	
-		// $data['cates'] = $this->db->get('article_cates')->result_array();
-		$parent = $this->db->where('pid',0)->get('article_cates')->result_array();
-		foreach ($parent as $k => $v) 
-		{
-
-			$parent[$k]['children'] = $this->db->where('pid',$v['id'])->get('article_cates')->result_array();
-			foreach ($parent[$k]['children'] as $_k => $_v) 
-			{
-				$parent[$k]['children'][$_k]['children'] = $this->db->where('pid',$_v['id'])->get('article_cates')->result_array();
-			}
-
-		}
-
-		$data['article_cates'] = $parent;
-
+		$data['action'] = 'add_article';
+		$article_cates 	= $this->db->get('article_cates')->result_array();
+		$data['article_cates'] = $this->getSubTree($article_cates);
 
 		$this->load->view("site/article.html",$data);
 	}
@@ -103,7 +90,8 @@ class Site extends MY_Controller
 		$data['action'] 	= 'update_article';
 		$data['article_id'] = $id;
 
-		$data['cates'] = $this->db->get('article_cates')->result_array();
+		$article_cates 	= $this->db->get('article_cates')->result_array();
+		$data['article_cates'] = $this->getSubTree($article_cates);
 
 		$this->load->view("site/article.html",$data);
 	}
@@ -154,21 +142,7 @@ class Site extends MY_Controller
 	{
 		$data['title'] = "文章分类列表";
 		$article_cates = $this->db->get('article_cates')->result_array();
-		
-		$parent = $this->db->where('pid',0)->get('article_cates')->result_array();
-		foreach ($parent as $k => $v) 
-		{
-
-			$parent[$k]['children'] = $this->db->where('pid',$v['id'])->get('article_cates')->result_array();
-			foreach ($parent[$k]['children'] as $_k => $_v) 
-			{
-				$parent[$k]['children'][$_k]['children'] = $this->db->where('pid',$_v['id'])->get('article_cates')->result_array();
-			}
-
-		}
-
-		$data['article_cates'] = $parent;
-		
+		$data['article_cates'] = $this->getSubTree($article_cates);
 		$this->load->view("site/list_article_cates.html",$data);
 	}	
 
@@ -176,9 +150,8 @@ class Site extends MY_Controller
 	{
 		$data['title'] = "添加文章分类";
 		$data['action'] = 'add_article_cate';
-		$data['article_cates'] = $this->db->get('article_cates')->result_array();
-
-
+		$article_cates = $this->db->get('article_cates')->result_array();
+		$data['article_cates'] = $this->getSubTree($article_cates);
 		$this->load->view("site/article_cate.html",$data);
 	}
 
@@ -208,7 +181,8 @@ class Site extends MY_Controller
 		$id = !empty($id) ? intval($id) : exit('param id error');
 		$data['title'] 	= "更改文章分类";	
 		$data['cate'] 	= $this->db->where('id',$id)->get('article_cates')->row_array();
-		$data['article_cates'] = $this->db->get('article_cates')->result_array();
+		$article_cates 	= $this->db->get('article_cates')->result_array();
+		$data['article_cates'] = $this->getSubTree($article_cates);
 		$data['action'] = 'update_article_cate';
 		$data['cid'] = $id;
 		$this->load->view("site/article_cate.html",$data);
@@ -244,6 +218,47 @@ class Site extends MY_Controller
 		echo $mk;
 		exit();
 	}
+
+
+	// public function show_cates()
+	// {
+
+	// 	$cates 	= $this->db->get('article_cates')->result_array(); //所有的分类
+	// 	$res = $this-> getSubTree($cates);
+	// 	foreach ($res as $k => $v) {
+	// 		echo $v['name']."lv:{$v['lev']}";
+	// 		echo "<br>";
+	// 	}
+	// }
+
+
+
+
+	/**
+	 * 获取子孙树
+	 * @param   array        $data   待分类的数据
+	 * @param   int/string   $id     要找的子节点id
+	 * @param   int          $lev    节点等级
+	 */
+	function getSubTree($data , $id = 0 , $lev = 0) {
+	    static $son = array();
+
+	    foreach($data as $key => $value) {
+	        if($value['pid'] == $id) {
+	            $value['lev'] = $lev;
+	            $son[] = $value;
+	            $this->getSubTree($data , $value['id'] , $lev+1);
+	        }
+	    }
+
+	    return $son;
+	 }
+
+
+
+
+
+
 
 
 	

@@ -43,24 +43,18 @@
                                             <label>分类名称</label>
                                             <input class="form-control" id="name" value="<?php echo isset($cate['name']) ? $cate['name'] : ''; ?>" >
                                         </div>
-
+                                        <?php $cate['pid'] = isset($cate['pid']) ? $cate['pid'] : '' ?>
                                         <div class="form-group">
                                             <label>父类选择</label>
                                             <select class="form-control" name="pid" id="pid">
                                                 <option value="0" <?php if ( $cate['pid'] == 0 ) echo "selected"; ?> >顶级分类</option>
                                                 <?php foreach ($article_cates as $k => $v): ?>
-                                                <option value="<?php echo $v['id'] ?>" <?php if ( $cate['pid'] == $v['id'] ) echo "selected"; ?> ><?php echo $v['name'] ?></option>
-                                                <?php if ( array_key_exists('children',$v) ): ?>
-                                                    <?php foreach ($v['children'] as $_k => $_v): ?>
-                                                <option value="<?php echo $_v['id'] ?>" <?php if ( $cate['pid'] == $_v['id'] ) echo "selected"; ?>>--<?php echo $_v['name'] ?></option>   
-                                                    <?php if ( array_key_exists('children',$_v) ): ?>
-                                                        <?php foreach ($_v['children'] as $__k => $__v): ?>
-                                                <option value="<?php echo $__v['id'] ?>" <?php if ( $cate['pid'] == $__v['id'] ) echo "selected"; ?> >--<?php echo $__v['name'] ?></option>         
-                                                        <?php endforeach ?>     
-                                                    <?php endif ?> 
-                                                    <?php endforeach ?>
+                                                <option value="<?php echo $v['id']; ?>" <?php if ( $cate['pid'] == $v['id'] ) echo "selected"; ?> >
+                                                    <?php for ($i=1; $i <= $v['lev']; $i++) { echo "--"; } ?>
+                                                    <?php echo $v['name']; ?>
+                                                </option>     
                                                 
-                                                <?php endif ?>
+                                                   
                                                 <?php endforeach ?>
                                             </select>
                                         </div>

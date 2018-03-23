@@ -53,7 +53,10 @@
                                             <label>文章图片</label>
                                             <input type="file" name="apic" id="upload">
                                             <input type="hidden" id="pic_url" value="<?php echo isset($article['pic']) ? $article['pic'] : ''; ?>">
-                                            <img src="<?php echo isset($article['pic']) ? $article['pic'] : ''; ?>" class="img-responsive pic" >
+                                            <?php if ( isset($article['pic']) ): ?>
+                                            <img src="<?php echo isset($article['pic']) ? $article['pic'] : ''; ?>" class="img-responsive pic" >    
+                                            <?php endif ?>
+                                            
                                         </div>
 
                                         <?php $cid = isset($article['cid']) ? $article['cid'] : ''; ?>
@@ -61,8 +64,8 @@
                                             <label>文章分类</label>
                                             <select class="form-control" id="cid">
                                                 <option value="0">请选择分类</option>
-                                                <?php foreach ($cates as $k => $v): ?>
-                                                <option <?php if( $v['id'] == $cid ) echo "selected" ;?> value="<?php echo $v['id'] ?>"><?php echo $v['name'] ?></option>        
+                                                <?php foreach ($article_cates as $k => $v): ?>
+                                                <option <?php if( $v['id'] == $cid ) echo "selected" ;?> value="<?php echo $v['id'] ?>"><?php echo $v['name'] ?></option>
                                                 <?php endforeach ?>
                                             </select>
                                         </div>
