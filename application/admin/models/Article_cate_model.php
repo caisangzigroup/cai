@@ -57,7 +57,36 @@ class Article_cate_model extends CI_Model
 
 	public function delete($id)
 	{
-		$res = $this->db->delete($this->table,array('id'=>$id));
-		return $res;
+		$data = $this->db->select('pid,id')->get($this->table)->result_array();
+
+		$son = $this->getSubTree($data,$id);
+		foreach ($son as $k => $v) 
+		{
+			$this->db->delete($this->table,array('id'=>$v['id']));
+		}
+		$this->db->delete($this->table,array('id'=>$id));
+		
+		return 1;
 	}
+
+	/**
+	 * 获取子孙树
+	 * @param   array        $data   待分类的数据
+	 * @param   int/string   $id     要找的子节点id
+	 * @param   int          $lev    节点等级
+	 */
+	function getSubTree($data , $id = 0 , $lev = 0) {
+	    static $son = array();
+
+	    foreach($data as $key => $value) {
+	        if($value['pid'] == $id) {
+	            $value['lev'] = $lev;
+	            $son[] = $value;
+	            $this->getSubTree($data , $value['id'] , $lev+1);
+	        }
+	    }
+
+	    return $son;
+	 }
+
 }

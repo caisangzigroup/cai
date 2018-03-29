@@ -11,6 +11,8 @@ class Menu extends MY_Controller
 	public function index()
 	{
 		$data['title'] = "网站导航";
+		$article_cates = $this->db->get('article_cates')->result_array();
+		$data['article_cates'] = $this->Article_cate_model->getSubTree($article_cates);
 
 		$parent = $this->db->where('pid',0)->get("menu")->result_array();
 		foreach ($parent as $k => $v) 
@@ -32,6 +34,9 @@ class Menu extends MY_Controller
 	public function add_tpl()
 	{
 		$data['title'] = "增加导航";
+		$article_cates = $this->db->get('article_cates')->result_array();
+		$data['article_cates'] = $this->Article_cate_model->getSubTree($article_cates);
+		$data['action'] = 'add';
 
 		$parent = $this->db->where('pid',0)->get("menu")->result_array();
 		foreach ($parent as $k => $v) 
@@ -47,7 +52,7 @@ class Menu extends MY_Controller
 
 		$data['menus'] = $parent;
 
-		$data['action'] = 'add';
+		
 
 		$this->load->view('menu/menu.html',$data);
 	}
@@ -75,7 +80,11 @@ class Menu extends MY_Controller
 
 	public function update_tpl($id)
 	{
+
 		$data['title'] = "修改导航";
+		$article_cates = $this->db->get('article_cates')->result_array();
+		$data['article_cates'] = $this->Article_cate_model->getSubTree($article_cates);
+		$data['action'] = 'update';
 
 		$data['menu'] = $this->db->where('id',$id)->get('menu')->row_array();
 
@@ -93,7 +102,7 @@ class Menu extends MY_Controller
 
 		$data['menus'] = $parent;
 
-		$data['action'] = 'update';
+		
 
 		$this->load->view('menu/menu.html',$data);
 	}

@@ -8,7 +8,6 @@ class Site extends MY_Controller
 	{
 		parent::__construct();
 		$this->load->model("Article_model");
-		$this->load->model("Article_cate_model");
 	}
 
 	public function index()
@@ -22,6 +21,11 @@ class Site extends MY_Controller
 		$cid 	= !empty($cid) ? $cid : 0;
 		$page 	= !empty($page) ? $page : 1;
 		$data['title'] = "文章列表";
+		$article_cates = $this->db->get('article_cates')->result_array();
+		$data['article_cates'] = $this->Article_cate_model->getSubTree($article_cates);
+
+
+
 		$page_size = 20;
 		// $total = $this->Article_model->getNums();
 		if ( $cid > 0 ) 
@@ -51,10 +55,12 @@ class Site extends MY_Controller
 
 	public function add_article_tpl()
 	{
+
 		$data['title'] = "添加文章";
 		$data['action'] = 'add_article';
 		$article_cates 	= $this->db->get('article_cates')->result_array();
 		$data['article_cates'] = $this->getSubTree($article_cates);
+
 
 		$this->load->view("site/article.html",$data);
 	}
@@ -79,20 +85,18 @@ class Site extends MY_Controller
 	{
 
 		$data['title'] = "更改文章";
-		$id = !empty($id) ? intval($id) : exit('param id error');
+		$data['action'] 	= 'update_article';
+		$article_cates 	= $this->db->get('article_cates')->result_array();
+		$data['article_cates'] = $this->getSubTree($article_cates);
 
+
+		$id = !empty($id) ? intval($id) : exit('param id error');
+		$data['article_id'] = $id;
 		$this->db->select('articles.*,articles_data.body');
 		$this->db->from('articles');
 		$this->db->join('articles_data','articles.id=articles_data.aid','left');
 		$data['article'] = $this->db->where("articles.id={$id}")->get()->row_array();
-
-
-		$data['action'] 	= 'update_article';
-		$data['article_id'] = $id;
-
-		$article_cates 	= $this->db->get('article_cates')->result_array();
-		$data['article_cates'] = $this->getSubTree($article_cates);
-
+	
 		$this->load->view("site/article.html",$data);
 	}
 
@@ -140,9 +144,12 @@ class Site extends MY_Controller
 
 	public function list_article_cates()
 	{
+
 		$data['title'] = "文章分类列表";
 		$article_cates = $this->db->get('article_cates')->result_array();
-		$data['article_cates'] = $this->getSubTree($article_cates);
+		$data['article_cates'] = $this->Article_cate_model->getSubTree($article_cates);
+
+
 		$this->load->view("site/list_article_cates.html",$data);
 	}	
 
@@ -151,7 +158,9 @@ class Site extends MY_Controller
 		$data['title'] = "添加文章分类";
 		$data['action'] = 'add_article_cate';
 		$article_cates = $this->db->get('article_cates')->result_array();
-		$data['article_cates'] = $this->getSubTree($article_cates);
+		$data['article_cates'] = $this->Article_cate_model->getSubTree($article_cates);
+
+
 		$this->load->view("site/article_cate.html",$data);
 	}
 
@@ -178,14 +187,17 @@ class Site extends MY_Controller
 
 	public function update_article_cate_tpl($id)
 	{
-		$id = !empty($id) ? intval($id) : exit('param id error');
+
 		$data['title'] 	= "更改文章分类";	
 		$data['cate'] 	= $this->db->where('id',$id)->get('article_cates')->row_array();
 		$article_cates 	= $this->db->get('article_cates')->result_array();
-		$data['article_cates'] = $this->getSubTree($article_cates);
+		$data['article_cates'] = $this->Article_cate_model->getSubTree($article_cates);
 		$data['action'] = 'update_article_cate';
+
+		$id = !empty($id) ? intval($id) : exit('param id error');
 		$data['cid'] = $id;
 		$this->load->view("site/article_cate.html",$data);
+
 	}
 
 	public function update_article_cate($id)
@@ -218,46 +230,6 @@ class Site extends MY_Controller
 		echo $mk;
 		exit();
 	}
-
-
-	// public function show_cates()
-	// {
-
-	// 	$cates 	= $this->db->get('article_cates')->result_array(); //所有的分类
-	// 	$res = $this-> getSubTree($cates);
-	// 	foreach ($res as $k => $v) {
-	// 		echo $v['name']."lv:{$v['lev']}";
-	// 		echo "<br>";
-	// 	}
-	// }
-
-
-
-
-	/**
-	 * 获取子孙树
-	 * @param   array        $data   待分类的数据
-	 * @param   int/string   $id     要找的子节点id
-	 * @param   int          $lev    节点等级
-	 */
-	function getSubTree($data , $id = 0 , $lev = 0) {
-	    static $son = array();
-
-	    foreach($data as $key => $value) {
-	        if($value['pid'] == $id) {
-	            $value['lev'] = $lev;
-	            $son[] = $value;
-	            $this->getSubTree($data , $value['id'] , $lev+1);
-	        }
-	    }
-
-	    return $son;
-	 }
-
-
-
-
-
 
 
 

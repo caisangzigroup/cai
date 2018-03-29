@@ -30,7 +30,7 @@
                             <li>
                                 <a href="admin.php/site/list_articles/">所有文章</a>
                             </li>
-                            <?php $article_cates = $this->db->get('article_cates')->result_array(); ?>
+                            
                             <?php if ( count($article_cates) != 0 ): ?>
                             <?php foreach ($article_cates as $k => $v): ?>
                             <li>
@@ -46,6 +46,23 @@
                     </li>
                 </ul>
             </li>
+
+
+            
+
+
+            <li>
+                <a href="javascript:;"><i class="fa fa-sitemap fa-fw"></i> 会员系统<span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a href="admin.php/member/list_members/"> 会员列表</a>
+                    </li>
+                </ul>
+                <!-- /.nav-second-level -->
+            </li>
+
+           
+           
             <li>
                 <a href="javascript:;"><i class="fa fa-file-text-o fa-fw"></i> 单页<span class="fa arrow"></a>
                 <ul class="nav nav-second-level">
@@ -87,15 +104,7 @@
             </li>
 
             
-            <li>
-                <a href="javascript:;"><i class="fa fa-sitemap fa-fw"></i> 会员系统<span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level">
-                    <li>
-                        <a href="admin.php/member/list_members/"> 会员列表</a>
-                    </li>
-                </ul>
-                <!-- /.nav-second-level -->
-            </li>
+            
 
             <li>
                 <a href="javascript:;"><i class="fa fa-sitemap fa-fw"></i> 友情链接<span class="fa arrow"></span></a>

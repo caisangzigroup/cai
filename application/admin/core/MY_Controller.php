@@ -9,6 +9,7 @@ class MY_Controller extends CI_Controller
 		$this->load->database();
 		$this->load->library('session');
 		$this->load->model("User_model");
+		$this->load->model("Article_cate_model");
 		$this->load->helper ( array (
 				'form',
 				'url'
